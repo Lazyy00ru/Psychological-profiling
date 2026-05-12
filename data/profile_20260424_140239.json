@@ -1,0 +1,43 @@
+{
+  "extraversion": 15,
+  "agreeableness": 16,
+  "conscientiousness": 15,
+  "neuroticism": 13,
+  "openness": 17,
+  "overall_score": 61,
+  "personality_type": "The Balanced Realist",
+  "career_verdict": "You dream big and thrive on power — the boardroom is your natural habitat. Just don't forget the little people on the way up.",
+  "insights": [
+    "You are an ambivert — comfortable in social situations but equally happy with your own company. A rare and balanced trait.",
+    "You balance assertiveness with empathy — you can stand your ground without burning bridges.",
+    "Moderately conscientious — you can be organised when it matters, but you know how to go with the flow.",
+    "Your emotional landscape is balanced — you feel things fully without being overwhelmed by them.",
+    "Moderately open — you enjoy new experiences but also appreciate routine and familiarity."
+  ],
+  "movies_detail": [
+    {
+      "title": "The Social Network",
+      "year": "2010",
+      "plot": "As Harvard student Mark Zuckerberg creates the social networking site that would become known as Facebook, he is sued by the twins who claimed he stole their idea and by the co-founder who was later squeezed out of the business.",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMjlkNTE5ZTUtNGEwNy00MGVhLThmZjMtZjU1NDE5Zjk1NDZkXkEyXkFqcGc@._V1_SX300.jpg",
+      "rating": "7.8"
+    },
+    {
+      "title": "Margin Call",
+      "year": "2011",
+      "plot": "Follows the key people at an investment bank over a 24-hour period during the early stages of the 2008 financial crisis.",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMjE5NzkyNDI2Nl5BMl5BanBnXkFtZTcwMTYzNDc2Ng@@._V1_SX300.jpg",
+      "rating": "7.1"
+    },
+    {
+      "title": "Wall Street",
+      "year": "1987",
+      "plot": "An impatient young stockbroker is willing to do anything to get to the top, including trading on illegal inside information taken through a ruthless, greedy corporate raider who takes the youth under his wing.",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMWQ4NDY4NTktYjE5NS00MWQ5LWFmZTUtNjk5NjA4Mzc3ODNhXkEyXkFqcGc@._V1_SX300.jpg",
+      "rating": "7.3"
+    }
+  ],
+  "pet_images": {
+    "cat": "cat.jpg"
+  }
+}

@@ -1,0 +1,566 @@
+<!-- psycho.html — form fragment for PersonaLab (159.352 Assignment 1) -->
+
+<style>
+  .pf-wrap { font-family: 'DM Sans', sans-serif; color: var(--text); }
+
+  .pf-divider { border: none; border-top: 1px solid var(--border); margin: 1.8rem 0; }
+
+  .pf-section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  /* ── Basic info table ── */
+  .pf-table { width: 100%; border-collapse: collapse; margin-bottom: 0.5rem; }
+  .pf-table tr { border-bottom: 1px solid var(--border); }
+  .pf-table tr:last-child { border-bottom: none; }
+  .pf-table td { padding: 0.65rem 0.4rem; vertical-align: middle; }
+  .pf-table td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    width: 200px;
+    white-space: nowrap;
+  }
+
+  /* ── Inputs ── */
+  .pf-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--text-hi);
+    padding: 0.5rem 0.8rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+  }
+  .pf-input:focus { outline: none; border-color: var(--accent); }
+  .pf-input::placeholder { color: var(--muted); }
+
+  /* ── Radio (gender) ── */
+  .pf-radio-group { display: flex; gap: 1.5rem; align-items: center; }
+  .pf-radio-group label { display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.9rem; color: var(--text); }
+  .pf-radio-group input[type="radio"] { accent-color: var(--accent); width: 15px; height: 15px; }
+
+  /* ── Questions ── */
+  .pf-questions-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+  .pf-questions { list-style: none; padding: 0; margin: 0; }
+  .pf-questions li {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .pf-questions li:last-child { border-bottom: none; }
+  .pf-q-text { font-size: 0.9rem; color: var(--text-hi); font-weight: 500; }
+
+  /* ── Scale row ── */
+  .pf-scale {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .pf-scale-nums { display: flex; gap: 0.15rem; }
+  .pf-scale-nums label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 0.7rem;
+    padding: 0.3rem 0.45rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    min-width: 32px;
+    text-align: center;
+  }
+  .pf-scale-nums label:hover {
+    color: var(--accent-hi);
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .pf-scale-nums input[type="radio"] { accent-color: var(--accent); width: 13px; height: 13px; }
+
+  /* ── Select ── */
+  .pf-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--text-hi);
+    padding: 0.5rem 0.8rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    width: 100%;
+    max-width: 400px;
+    transition: border-color 0.2s;
+  }
+  .pf-select:focus { outline: none; border-color: var(--accent); }
+
+  /* ── Checkboxes (pets) ── */
+  .pf-check-group { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+  .pf-check-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text);
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface2);
+    transition: all 0.15s;
+  }
+  .pf-check-group label:hover { border-color: var(--accent); color: var(--accent-hi); background: var(--accent-dim); }
+  .pf-check-group input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px; }
+
+  /* ── Textarea ── */
+  .pf-textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--text-hi);
+    padding: 0.6rem 0.8rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    resize: vertical;
+    line-height: 1.55;
+    transition: border-color 0.2s;
+  }
+  .pf-textarea:focus { outline: none; border-color: var(--accent); }
+  .pf-textarea::placeholder { color: var(--muted); }
+
+  /* ── Submit ── */
+  .pf-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--accent);
+    color: #000;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.8rem 2rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .pf-submit:hover { background: var(--accent-hi); transform: translateY(-2px); }
+  .pf-submit:active { transform: translateY(0); }
+
+  /* ── Mobile responsive ── */
+  @media (max-width: 600px) {
+    .pf-table td:first-child { width: 130px; font-size: 0.65rem; }
+    .pf-scale { gap: 0.3rem; }
+    .pf-scale-nums label { min-width: 28px; padding: 0.25rem 0.3rem; }
+    .pf-check-group { gap: 0.5rem; }
+  }
+</style>
+
+<div class="pf-wrap">
+  <form name="psychoform" id="psychoForm">
+
+    <!-- ── Personal Info ── -->
+    <div class="pf-section-title">// Personal Information</div>
+    <table class="pf-table">
+      <tr>
+        <td>Your name</td>
+        <td><input class="pf-input" type="text" name="name" size="25" placeholder="Enter your name" /></td>
+      </tr>
+      <tr>
+        <td>Gender</td>
+        <td>
+          <div class="pf-radio-group">
+            <label><input type="radio" name="gender" value="M" /> Male</label>
+            <label><input type="radio" name="gender" value="F" /> Female</label>
+            <label><input type="radio" name="gender" value="0" /> Others</label>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Year of birth</td>
+        <td><input class="pf-input" type="text" name="birthyear" size="25" placeholder="e.g. 1995" /></td>
+      </tr>
+      <tr>
+        <td>Country of birth</td>
+        <td><input class="pf-input" type="text" name="birthplace" size="25" placeholder="e.g. New Zealand" /></td>
+      </tr>
+      <tr>
+        <td>Country of residence</td>
+        <td><input class="pf-input" type="text" name="residence" size="25" placeholder="e.g. New Zealand" /></td>
+      </tr>
+    </table>
+
+    <hr class="pf-divider" />
+
+    <!-- ── Personality Questions ── -->
+    <div class="pf-questions-title">// I see myself as someone who…</div>
+    <ol class="pf-questions">
+
+      <li>
+        <span class="pf-q-text">… is talkative</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question1" value="1" />1</label>
+            <label><input type="radio" name="question1" value="2" />2</label>
+            <label><input type="radio" name="question1" value="3" />3</label>
+            <label><input type="radio" name="question1" value="4" />4</label>
+            <label><input type="radio" name="question1" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… does a thorough job</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question2" value="1" />1</label>
+            <label><input type="radio" name="question2" value="2" />2</label>
+            <label><input type="radio" name="question2" value="3" />3</label>
+            <label><input type="radio" name="question2" value="4" />4</label>
+            <label><input type="radio" name="question2" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… is original, comes up with new ideas</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question3" value="1" />1</label>
+            <label><input type="radio" name="question3" value="2" />2</label>
+            <label><input type="radio" name="question3" value="3" />3</label>
+            <label><input type="radio" name="question3" value="4" />4</label>
+            <label><input type="radio" name="question3" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… is helpful, unselfish with others</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question4" value="1" />1</label>
+            <label><input type="radio" name="question4" value="2" />2</label>
+            <label><input type="radio" name="question4" value="3" />3</label>
+            <label><input type="radio" name="question4" value="4" />4</label>
+            <label><input type="radio" name="question4" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… can be somewhat careless</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question5" value="1" />1</label>
+            <label><input type="radio" name="question5" value="2" />2</label>
+            <label><input type="radio" name="question5" value="3" />3</label>
+            <label><input type="radio" name="question5" value="4" />4</label>
+            <label><input type="radio" name="question5" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… is relaxed, handles stress well</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question6" value="1" />1</label>
+            <label><input type="radio" name="question6" value="2" />2</label>
+            <label><input type="radio" name="question6" value="3" />3</label>
+            <label><input type="radio" name="question6" value="4" />4</label>
+            <label><input type="radio" name="question6" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… is curious about many things</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question7" value="1" />1</label>
+            <label><input type="radio" name="question7" value="2" />2</label>
+            <label><input type="radio" name="question7" value="3" />3</label>
+            <label><input type="radio" name="question7" value="4" />4</label>
+            <label><input type="radio" name="question7" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… is full of energy</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question8" value="1" />1</label>
+            <label><input type="radio" name="question8" value="2" />2</label>
+            <label><input type="radio" name="question8" value="3" />3</label>
+            <label><input type="radio" name="question8" value="4" />4</label>
+            <label><input type="radio" name="question8" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… starts quarrels with others</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question9" value="1" />1</label>
+            <label><input type="radio" name="question9" value="2" />2</label>
+            <label><input type="radio" name="question9" value="3" />3</label>
+            <label><input type="radio" name="question9" value="4" />4</label>
+            <label><input type="radio" name="question9" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… is a reliable worker</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question10" value="1" />1</label>
+            <label><input type="radio" name="question10" value="2" />2</label>
+            <label><input type="radio" name="question10" value="3" />3</label>
+            <label><input type="radio" name="question10" value="4" />4</label>
+            <label><input type="radio" name="question10" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… is a deep thinker</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question11" value="1" />1</label>
+            <label><input type="radio" name="question11" value="2" />2</label>
+            <label><input type="radio" name="question11" value="3" />3</label>
+            <label><input type="radio" name="question11" value="4" />4</label>
+            <label><input type="radio" name="question11" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… tends to be disorganized</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question12" value="1" />1</label>
+            <label><input type="radio" name="question12" value="2" />2</label>
+            <label><input type="radio" name="question12" value="3" />3</label>
+            <label><input type="radio" name="question12" value="4" />4</label>
+            <label><input type="radio" name="question12" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… worries a lot</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question13" value="1" />1</label>
+            <label><input type="radio" name="question13" value="2" />2</label>
+            <label><input type="radio" name="question13" value="3" />3</label>
+            <label><input type="radio" name="question13" value="4" />4</label>
+            <label><input type="radio" name="question13" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… tends to be quiet</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question14" value="1" />1</label>
+            <label><input type="radio" name="question14" value="2" />2</label>
+            <label><input type="radio" name="question14" value="3" />3</label>
+            <label><input type="radio" name="question14" value="4" />4</label>
+            <label><input type="radio" name="question14" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… tends to be lazy</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question15" value="1" />1</label>
+            <label><input type="radio" name="question15" value="2" />2</label>
+            <label><input type="radio" name="question15" value="3" />3</label>
+            <label><input type="radio" name="question15" value="4" />4</label>
+            <label><input type="radio" name="question15" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… is sometimes shy</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question16" value="1" />1</label>
+            <label><input type="radio" name="question16" value="2" />2</label>
+            <label><input type="radio" name="question16" value="3" />3</label>
+            <label><input type="radio" name="question16" value="4" />4</label>
+            <label><input type="radio" name="question16" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… is sometimes rude to others</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question17" value="1" />1</label>
+            <label><input type="radio" name="question17" value="2" />2</label>
+            <label><input type="radio" name="question17" value="3" />3</label>
+            <label><input type="radio" name="question17" value="4" />4</label>
+            <label><input type="radio" name="question17" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… tends to find fault with others</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question18" value="1" />1</label>
+            <label><input type="radio" name="question18" value="2" />2</label>
+            <label><input type="radio" name="question18" value="3" />3</label>
+            <label><input type="radio" name="question18" value="4" />4</label>
+            <label><input type="radio" name="question18" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… gets nervous easily</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question19" value="1" />1</label>
+            <label><input type="radio" name="question19" value="2" />2</label>
+            <label><input type="radio" name="question19" value="3" />3</label>
+            <label><input type="radio" name="question19" value="4" />4</label>
+            <label><input type="radio" name="question19" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+      <li>
+        <span class="pf-q-text">… likes to work in a team</span>
+        <div class="pf-scale">
+          <span>Disagree</span>
+          <div class="pf-scale-nums">
+            <label><input type="radio" name="question20" value="1" />1</label>
+            <label><input type="radio" name="question20" value="2" />2</label>
+            <label><input type="radio" name="question20" value="3" />3</label>
+            <label><input type="radio" name="question20" value="4" />4</label>
+            <label><input type="radio" name="question20" value="5" />5</label>
+          </div>
+          <span>Agree</span>
+        </div>
+      </li>
+
+    </ol>
+
+    <hr class="pf-divider" />
+
+    <!-- ── Job Preference ── -->
+    <div class="pf-section-title">// Dream Job</div>
+    <select class="pf-select" name="job">
+      <option value="ceo">CEO of a large mega-corporation</option>
+      <option value="astronaut">Astronaut</option>
+      <option value="doctor">Medical doctor</option>
+      <option value="model">Fashion model</option>
+      <option value="rockstar">Rock star</option>
+      <option value="garbage">Refuse collection operative</option>
+    </select>
+
+    <hr class="pf-divider" />
+
+    <!-- ── Pets ── -->
+    <div class="pf-section-title">// Pets you'd love</div>
+    <div class="pf-check-group">
+      <label><input type="checkbox" name="pets" value="dog" /> Dog</label>
+      <label><input type="checkbox" name="pets" value="cat" /> Cat</label>
+      <label><input type="checkbox" name="pets" value="duck" /> Duck</label>
+    </div>
+
+    <hr class="pf-divider" />
+
+    <!-- ── Message ── -->
+    <div class="pf-section-title">// Message or comment</div>
+    <textarea class="pf-textarea" name="message" rows="5" placeholder="Leave a message or comment…"></textarea>
+
+    <br /><br />
+
+    <button type="submit" class="pf-submit">
+      Submit Form
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+
+  </form>
+</div>

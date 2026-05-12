@@ -1,0 +1,52 @@
+{
+  "name": "ii",
+  "gender": "0",
+  "birthyear": "2231",
+  "birthplace": "ssfe",
+  "residence": "sdfdfe",
+  "job": "garbage",
+  "pets": [
+    "duck"
+  ],
+  "extraversion": 15,
+  "agreeableness": 15,
+  "conscientiousness": 15,
+  "neuroticism": 15,
+  "openness": 15,
+  "overall_score": 60,
+  "personality_type": "The Balanced Realist",
+  "career_verdict": "Underrated and essential. You are the backbone of civilisation — someone has to keep the world clean, and you own it.",
+  "insights": [
+    "You are an ambivert — comfortable in social situations but equally happy with your own company. A rare and balanced trait.",
+    "You balance assertiveness with empathy — you can stand your ground without burning bridges.",
+    "Moderately conscientious — you can be organised when it matters, but you know how to go with the flow.",
+    "Your emotional landscape is balanced — you feel things fully without being overwhelmed by them.",
+    "Moderately open — you enjoy new experiences but also appreciate routine and familiarity."
+  ],
+  "movies_detail": [
+    {
+      "title": "Billy Madison",
+      "year": "1995",
+      "plot": "In order to inherit his fed-up father Brian's hotel empire, immature and lazy Billy Madison must repeat grades one through twelve all over again. The further Billy progresses, the harder his hated rival Eric Gordon tries to stop him.",
+      "poster": "https://m.media-amazon.com/images/M/MV5BY2Y2ODczY2YtZTQ4NS00NWQxLTlhZWMtZWY4M2IyMmJhZGI1XkEyXkFqcGc@._V1_SX300.jpg",
+      "rating": "6.4"
+    },
+    {
+      "title": "Office Space",
+      "year": "1999",
+      "plot": "Three company workers who hate their jobs decide to rebel against their greedy boss.",
+      "poster": "https://m.media-amazon.com/images/M/MV5BOTA5MzQ3MzI1NV5BMl5BanBnXkFtZTgwNTcxNTYxMTE@._V1_SX300.jpg",
+      "rating": "7.6"
+    },
+    {
+      "title": "The Full Monty",
+      "year": "1997",
+      "plot": "Six unemployed steel workers form a male striptease act. The women cheer them on to go for \"the full monty\" - total nudity.",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYjZjNjU4YjItM2NhNS00NzIwLWIzMjMtMGMzZjcyMjYwYzE2XkEyXkFqcGc@._V1_SX300.jpg",
+      "rating": "7.2"
+    }
+  ],
+  "pet_images": {
+    "duck": "duck.jpg"
+  }
+}

@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PersonaLab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #060d0f;
+      --surface:   #0c1518;
+      --surface2:  #111d21;
+      --border:    #1a3038;
+      --accent:    #00b4cc;
+      --accent-hi: #00e5ff;
+      --accent-dim:rgba(0,180,204,0.1);
+      --text:      #c8dde0;
+      --text-hi:   #eef8fa;
+      --muted:     #4a6670;
+      --success:   #3ecf82;
+      --danger:    #e05c6a;
+      --nav-h:     64px;
+    }
+    [data-theme="light"] {
+      --bg:        #f0f9fb;
+      --surface:   #ffffff;
+      --surface2:  #e0f4f7;
+      --border:    #a8d8e0;
+      --accent:    #0094aa;
+      --accent-hi: #006e80;
+      --accent-dim:rgba(0,148,170,0.08);
+      --text:      #1a3a40;
+      --text-hi:   #0a1f24;
+      --muted:     #5a8a94;
+      --success:   #16a34a;
+      --danger:    #dc2626;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; }
+
+    /* ── NAV ── */
+    nav { position: sticky; top: 0; z-index: 100; height: var(--nav-h); background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 2rem; gap: 1.2rem; transition: background 0.3s, border-color 0.3s; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.1em; color: var(--accent-hi); text-decoration: none; flex-shrink: 0; transition: opacity 0.2s; }
+    .nav-logo:hover { opacity: 0.75; }
+    .nav-logo sup { font-family: 'DM Mono', monospace; font-size: 0.38rem; color: var(--muted); vertical-align: super; margin-left: 2px; }
+    .nav-links { display: flex; align-items: center; gap: 0.1rem; flex: 1; }
+    .nav-link { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid transparent; cursor: pointer; background: transparent; transition: all 0.18s; white-space: nowrap; }
+    .nav-link:hover { color: var(--text-hi); border-color: var(--border); background: var(--surface2); }
+    .nav-link.active { color: var(--accent-hi); border-color: var(--accent); background: var(--accent-dim); }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: transparent; border: none; flex-shrink: 0; }
+    .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.2s; }
+    .nav-drawer { display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem; flex-direction: column; gap: 0.3rem; z-index: 99; }
+    .nav-drawer.open { display: flex; }
+    .nav-drawer .nav-link { font-size: 0.85rem; padding: 0.6rem 1rem; }
+    .nav-search { display: flex; align-items: center; gap: 0.5rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; padding: 0.3rem 0.85rem; transition: border-color 0.2s; flex-shrink: 0; }
+    .nav-search:focus-within { border-color: var(--accent); }
+    .nav-search svg { color: var(--muted); flex-shrink: 0; }
+    .nav-search input { background: transparent; border: none; outline: none; color: var(--text-hi); font-family: 'DM Sans', sans-serif; font-size: 0.82rem; width: 140px; }
+    .nav-search input::placeholder { color: var(--muted); }
+    .nav-settings { position: relative; flex-shrink: 0; }
+    .settings-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.18s; }
+    .settings-btn:hover { border-color: var(--accent); color: var(--accent-hi); }
+    .settings-dropdown { position: absolute; top: calc(100% + 10px); right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; width: 220px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); display: none; z-index: 200; }
+    .settings-dropdown.open { display: block; }
+    .settings-dropdown h3 { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.9rem; }
+    .setting-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .setting-row:last-child { margin-bottom: 0; }
+    .setting-label { font-size: 0.85rem; font-weight: 500; color: var(--text); }
+    .setting-sub { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+    .setting-row-theme { display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.75rem; }
+    .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-track { position: absolute; inset: 0; background: var(--border); border-radius: 999px; cursor: pointer; transition: background 0.2s; }
+    .toggle input:checked + .toggle-track { background: var(--accent); }
+    .toggle-track::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform 0.2s; }
+    .toggle input:checked + .toggle-track::after { transform: translateX(18px); }
+
+    /* ── HERO ── */
+    .hero { border-bottom: 1px solid var(--border); padding: 5rem 2rem 4.5rem; text-align: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(0,180,204,0.15) 0%, transparent 70%); pointer-events: none; }
+    .hero-eyebrow { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem; }
+    .hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 10vw, 8rem); letter-spacing: 0.06em; color: var(--text-hi); line-height: 0.95; margin-bottom: 1.5rem; }
+    .hero-title span { color: var(--accent-hi); }
+    .hero-sub { font-size: 1rem; color: var(--muted); max-width: 440px; margin: 0 auto 2.5rem; line-height: 1.65; }
+    .hero-cta { display: inline-flex; align-items: center; gap: 0.6rem; background: var(--accent); color: #fff; font-family: 'DM Mono', monospace; font-size: 0.76rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.8rem 2rem; border-radius: 999px; border: none; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+    .hero-cta:hover { background: var(--accent-hi); transform: translateY(-2px); }
+
+    /* ── PAGE BODY ── */
+    .page-body { flex: 1; display: flex; max-width: 1200px; width: 100%; margin: 0 auto; padding: 2.5rem 2rem; gap: 2rem; align-items: flex-start; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { width: 200px; flex-shrink: 0; position: sticky; top: calc(var(--nav-h) + 1.5rem); }
+    .sidebar-section { margin-bottom: 1.5rem; }
+    .sidebar-heading { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+    .sidebar-btn { display: flex; align-items: center; gap: 0.65rem; width: 100%; padding: 0.65rem 0.9rem; margin-bottom: 0.6rem; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.86rem; font-weight: 600; cursor: pointer; text-align: left; transition: all 0.18s; background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
+    .sidebar-btn:hover { background: rgba(0,180,204,0.15); border-color: var(--accent); color: var(--accent-hi); }
+    .sidebar-btn.danger:hover { background: rgba(224,92,106,0.1); border-color: var(--danger); color: var(--danger); }
+    .sidebar-btn .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: 0.6; flex-shrink: 0; }
+
+    /* ── CONTENT ── */
+    .content { flex: 1; min-width: 0; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── CARDS ── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; margin-bottom: 1.5rem; transition: background 0.3s, border-color 0.3s; }
+    .card-eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.1rem; }
+
+    /* ── DATA DISPLAY ── */
+    .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.7rem; margin-bottom: 1.5rem; }
+    .data-cell { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 0.9rem; }
+    .data-cell .k { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.25rem; }
+    .data-cell .v { font-size: 0.92rem; font-weight: 600; color: var(--text-hi); word-break: break-word; }
+    .q-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    .q-table td { padding: 0.38rem 0.5rem; border-bottom: 1px solid var(--border); }
+    .q-table td:first-child { color: var(--text); }
+    .q-table td:last-child { text-align: right; font-family: 'DM Mono', monospace; color: var(--accent-hi); font-weight: 500; white-space: nowrap; }
+
+    /* ── PROFILE ── */
+    .score-big { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 8vw, 5rem); color: var(--accent-hi); line-height: 1; letter-spacing: 0.04em; }
+    .score-big span { font-size: clamp(1.5rem, 4vw, 2rem); color: var(--muted); }
+    .trait-row { margin-bottom: 1rem; }
+    .trait-meta { display: flex; justify-content: space-between; font-size: 0.84rem; margin-bottom: 0.32rem; font-weight: 500; }
+    .trait-meta span:last-child { font-family: 'DM Mono', monospace; color: var(--accent-hi); font-size: 0.76rem; }
+    .trait-track { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+    .trait-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-hi)); border-radius: 3px; transition: width 1s ease; }
+    .insight-block { border-left: 3px solid var(--accent); padding: 0.85rem 1.15rem; background: var(--surface2); border-radius: 0 8px 8px 0; margin-bottom: 0.9rem; font-size: 0.93rem; line-height: 1.65; color: var(--text); }
+
+    /* ── MOVIES ── */
+    .movies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .movie-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
+    .movie-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .movie-card img { width: 100%; height: 210px; object-fit: cover; display: block; }
+    .movie-no-img { width: 100%; height: 210px; display: flex; align-items: center; justify-content: center; font-size: 2rem; background: var(--surface); }
+    .mc-body { padding: 0.75rem; }
+    .mc-title { font-size: 0.85rem; font-weight: 600; color: var(--text-hi); margin-bottom: 0.2rem; }
+    .mc-year { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted); margin-bottom: 0.4rem; }
+    .mc-plot { font-size: 0.73rem; color: var(--muted); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+    .mc-rating { margin-top: 0.4rem; font-family: 'DM Mono', monospace; font-size: 0.7rem; color: #c9a42e; }
+
+    /* ── PETS ── */
+    .pets-grid { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+    .pet-card { text-align: center; }
+    .pet-card img { width: 160px; height: 160px; object-fit: cover; border-radius: 10px; border: 1px solid var(--accent); display: block; }
+    .pet-name { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 0.5rem; }
+
+    /* ── HISTORY CARDS ── */
+    .history-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.75rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
+    .history-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+    /* ── BACK BUTTON ── */
+    .back-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.68rem; padding: 0.4rem 1rem; border-radius: 6px; cursor: pointer; letter-spacing: 0.08em; transition: all 0.18s; margin-bottom: 1rem; display: inline-block; }
+    .back-btn:hover { border-color: var(--accent); color: var(--accent-hi); }
+
+    /* ── FORM HIDDEN STATE ── */
+    #formContainer.not-started {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+      text-align: center;
+      gap: 1rem;
+    }
+    #formContainer.not-started .start-msg {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    #formContainer.not-started .start-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--accent);
+      color: #000;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.8rem 2rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    #formContainer.not-started .start-btn:hover { background: var(--accent-hi); transform: translateY(-2px); }
+
+    /* ── TOAST ── */
+    #toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.8rem 1.2rem; font-size: 0.8rem; font-family: 'DM Mono', monospace; color: var(--text); opacity: 0; transform: translateY(8px); transition: all 0.25s; z-index: 9999; max-width: 300px; pointer-events: none; }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.ok  { border-color: var(--success); color: var(--success); }
+    #toast.err { border-color: var(--danger);  color: var(--danger); }
+
+    .spin { display: inline-block; width: 13px; height: 13px; border: 2px solid var(--border); border-top-color: var(--accent-hi); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 0.4rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .empty { color: var(--muted); font-size: 0.85rem; font-style: italic; }
+    .search-hidden { display: none; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); background: var(--surface); padding: 3rem 2rem 2rem; margin-top: auto; transition: background 0.3s; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .footer-brand .brand-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.12em; color: var(--accent-hi); margin-bottom: 0.6rem; }
+    .footer-brand p { font-size: 0.82rem; color: var(--muted); line-height: 1.65; max-width: 210px; }
+    .footer-col h4 { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.9rem; }
+    .footer-col a { display: block; font-size: 0.84rem; color: var(--muted); text-decoration: none; margin-bottom: 0.48rem; cursor: pointer; transition: color 0.15s; }
+    .footer-col a:hover { color: var(--text-hi); }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; font-family: 'DM Mono', monospace; font-size: 0.64rem; color: var(--muted); flex-wrap: wrap; gap: 0.5rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-search input { width: 110px; }
+      .page-body { gap: 1.5rem; padding: 2rem 1.5rem; }
+      .sidebar { width: 170px; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    }
+    @media (max-width: 600px) {
+      nav { padding: 0 1rem; gap: 0.75rem; }
+      .nav-search { display: none; }
+      .hero { padding: 3.5rem 1.5rem 3rem; }
+      .page-body { flex-direction: column; padding: 1.5rem 1rem; gap: 1.2rem; }
+      .sidebar { width: 100%; position: static; }
+      .card { padding: 1.25rem; }
+      .data-grid { grid-template-columns: 1fr 1fr; }
+      .movies-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+      .pet-card img { width: 130px; height: 130px; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+      #toast { left: 1rem; right: 1rem; max-width: 100%; }
+    }
+    @media (min-width: 1400px) {
+      .page-body, .footer-inner, .footer-bottom { max-width: 1400px; }
+      .sidebar { width: 220px; }
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ════════ NAV ════════ -->
+<nav>
+  <a class="nav-logo" href="#" onclick="goHome(event)">PersonaLab<sup>TM</sup></a>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="switchTab('form', this)">The Test</button>
+    <button class="nav-link" onclick="switchTab('data', this)">Input Data</button>
+    <button class="nav-link" onclick="switchTab('profile', this)">My Profile</button>
+    <button class="nav-link" onclick="switchTab('about', this)">About</button>
+  </div>
+  <div class="nav-search">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" placeholder="Search questions…" id="searchInput" oninput="onSearch(this.value)" />
+  </div>
+  <div class="nav-settings">
+    <button class="settings-btn" onclick="toggleSettings()" title="Settings">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+    <div class="settings-dropdown" id="settingsDropdown">
+      <h3>Settings</h3>
+      <div class="setting-row-theme">
+        <div>
+          <div class="setting-label" id="themeLabel">Dark Mode</div>
+          <div class="setting-sub" id="themeSub">Switch to light mode</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="themeToggle" onchange="toggleTheme(this.checked)" />
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+      <div class="setting-row" style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border);margin-bottom:0">
+        <div>
+          <div class="setting-label">Version</div>
+          <div class="setting-sub">159.352 // 2026 S1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="nav-hamburger" onclick="toggleDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <button class="nav-link active" onclick="switchTab('form',this);closeDrawer()">The Test</button>
+  <button class="nav-link" onclick="switchTab('data',this);closeDrawer()">Input Data</button>
+  <button class="nav-link" onclick="switchTab('profile',this);closeDrawer()">My Profile</button>
+  <button class="nav-link" onclick="switchTab('about',this);closeDrawer()">About</button>
+  <div class="nav-search" style="margin-top:0.5rem;border-radius:8px">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" placeholder="Search questions…" oninput="onSearch(this.value)" style="width:100%" />
+  </div>
+</div>
+
+<!-- ════════ HERO ════════ -->
+<section class="hero">
+  <div class="hero-eyebrow">159.352 // Psychological Profiling</div>
+  <h1 class="hero-title">Know Your<br/><span>Mind.</span></h1>
+  <p class="hero-sub">Answer 20 questions. Get a (not necessarily serious) psychological profile — with movie picks and spirit animals.</p>
+  <button class="hero-cta" onclick="startTest()">
+    Take the Test
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </button>
+</section>
+
+<!-- ════════ PAGE BODY ════════ -->
+<div class="page-body" id="pageBody">
+  <aside class="sidebar">
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">Actions</div>
+      <button class="sidebar-btn" onclick="doSubmit()"><span class="dot"></span> Submit Form</button>
+      <button class="sidebar-btn" onclick="doAnalyze()"><span class="dot"></span> Run Analysis</button>
+      <button class="sidebar-btn danger" onclick="doReset()"><span class="dot"></span> Reset Data</button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">View</div>
+      <button class="sidebar-btn" onclick="loadInputData()"><span class="dot"></span> Load Input Data</button>
+      <button class="sidebar-btn" onclick="loadProfilePage()"><span class="dot"></span> My Profile</button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">History</div>
+      <button class="sidebar-btn" onclick="loadInputHistory()"><span class="dot"></span> Input Data History</button>
+      <button class="sidebar-btn" onclick="loadProfileHistory()"><span class="dot"></span> Profile History</button>
+    </div>
+
+  </aside>
+
+  <div class="content">
+
+    <!-- The Test -->
+    <div id="panel-form" class="panel active">
+      <div class="card">
+        <div class="card-eyebrow">// Subject Questionnaire</div>
+        <!-- Shows prompt until user clicks Take the Test -->
+        <div id="formContainer" class="not-started">
+          <p class="start-msg">Click the button below to begin your personality assessment.</p>
+          <button class="start-btn" onclick="revealForm()">
+            Take the Test
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Data -->
+    <div id="panel-data" class="panel">
+      <div class="card">
+        <div class="card-eyebrow">// Submitted Input Data</div>
+        <div id="inputDisplay"><span class="empty">Submit the form first, then click "Load Input Data".</span></div>
+      </div>
+    </div>
+
+    <!-- Profile -->
+    <div id="panel-profile" class="panel">
+      <div id="profileDisplay">
+        <div class="card"><span class="empty">Run the analysis first, then click "My Profile" to see your results.</span></div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div id="panel-history" class="panel">
+      <div id="historyDisplay">
+        <div class="card"><span class="empty">Click "Input Data History" or "Profile History" in the sidebar.</span></div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div id="panel-about" class="panel">
+      <div class="card">
+        <div class="card-eyebrow">// About PersonaLab</div>
+        <p style="font-size:1rem;line-height:1.75;color:var(--text);margin-bottom:1rem">
+          PersonaLab is built for <strong style="color:var(--text-hi)">159.352 Web Development</strong> at Massey University. It generates a psychological profile based on the Big Five personality model — analysing Extraversion, Agreeableness, Conscientiousness, Neuroticism, and Openness.
+        </p>
+        <p style="font-size:0.88rem;line-height:1.7;color:var(--muted);margin-bottom:1.5rem">
+          Movie recommendations are pulled from the OMDb API. Pet images are fetched live from public animal APIs. All analysis runs server-side via a FastAPI backend.
+        </p>
+        <div style="border-top:1px solid var(--border);padding-top:1.2rem">
+          <div class="card-eyebrow">// APIs Used</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem">
+            <span style="background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:0.28rem 0.85rem;font-size:0.78rem;color:var(--text)">OMDb Movie Database</span>
+            <span style="background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:0.28rem 0.85rem;font-size:0.78rem;color:var(--text)">dog.ceo</span>
+            <span style="background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:0.28rem 0.85rem;font-size:0.78rem;color:var(--text)">thecatapi.com</span>
+            <span style="background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:0.28rem 0.85rem;font-size:0.78rem;color:var(--text)">random-d.uk</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════ FOOTER ════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="brand-name">PersonaLab</div>
+      <p>A psychological profiling web app for 159.352. Discover your Big Five traits, get tailored movie picks, and meet your spirit animal.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigate</h4>
+      <a onclick="switchTabByName('form')">The Test</a>
+      <a onclick="switchTabByName('data')">Input Data</a>
+      <a onclick="switchTabByName('profile')">My Profile</a>
+      <a onclick="switchTabByName('about')">About</a>
+    </div>
+    <div class="footer-col">
+      <h4>Actions</h4>
+      <a onclick="doSubmit()">Submit Form</a>
+      <a onclick="doAnalyze()">Run Analysis</a>
+      <a onclick="loadInputData()">Load Input Data</a>
+      <a onclick="loadProfilePage()">My Profile</a>
+    </div>
+    <div class="footer-col">
+      <h4>APIs</h4>
+      <a href="https://www.omdbapi.com" target="_blank">OMDb API</a>
+      <a href="https://dog.ceo" target="_blank">dog.ceo</a>
+      <a href="https://thecatapi.com" target="_blank">The Cat API</a>
+      <a href="https://random-d.uk" target="_blank">random-d.uk</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 PersonaLab — 159.352 Assignment 1</span>
+    <span>Built with FastAPI &amp; Vanilla JS</span>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+// ── Theme ──────────────────────────────────────────────────────────────────────
+function updateThemeLabels(isLight) {
+  document.getElementById('themeLabel').textContent = isLight ? 'Light Mode' : 'Dark Mode';
+  document.getElementById('themeSub').textContent   = isLight ? 'Switch to dark mode' : 'Switch to light mode';
+}
+function toggleTheme(isLight) {
+  document.documentElement.setAttribute('data-theme', isLight ? 'light' : 'dark');
+  localStorage.setItem('pl-theme', isLight ? 'light' : 'dark');
+  updateThemeLabels(isLight);
+}
+function toggleSettings() { document.getElementById('settingsDropdown').classList.toggle('open'); }
+document.addEventListener('click', e => {
+  if (!document.querySelector('.nav-settings').contains(e.target))
+    document.getElementById('settingsDropdown').classList.remove('open');
+});
+const savedTheme = localStorage.getItem('pl-theme') || 'dark';
+document.documentElement.setAttribute('data-theme', savedTheme);
+const isLightOnLoad = savedTheme === 'light';
+if (isLightOnLoad) document.getElementById('themeToggle').checked = true;
+updateThemeLabels(isLightOnLoad);
+
+// ── Mobile drawer ──────────────────────────────────────────────────────────────
+function toggleDrawer() { document.getElementById('navDrawer').classList.toggle('open'); }
+function closeDrawer()  { document.getElementById('navDrawer').classList.remove('open'); }
+
+// ── Tab switching ──────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('pageBody').scrollIntoView({ behavior: 'smooth' });
+}
+function switchTabByName(name) {
+  const map = { form:0, data:1, profile:2, about:3 };
+  switchTab(name, document.querySelectorAll('.nav-links .nav-link')[map[name]]);
+}
+function goHome(e) {
+  e.preventDefault();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  switchTabByName('form');
+}
+
+// ── Take the Test — scrolls to form panel, form stays hidden until revealed ───
+function startTest() {
+  switchTabByName('form');
+  document.getElementById('pageBody').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── Reveal the actual form (called by the in-panel button) ────────────────────
+let formLoaded = false;
+function revealForm() {
+  if (formLoaded) return;
+  formLoaded = true;
+  const container = document.getElementById('formContainer');
+  container.classList.remove('not-started');
+  container.innerHTML = '<span class="spin"></span><span class="empty">Loading questionnaire…</span>';
+  fetch('/form')
+    .then(r => { if (!r.ok) throw new Error('Could not load form'); return r.text(); })
+    .then(html => {
+      container.innerHTML = html;
+      const form = container.querySelector('form');
+      if (form) form.addEventListener('submit', e => { e.preventDefault(); doSubmit(); });
+    })
+    .catch(e => { container.innerHTML = `<span style="color:var(--danger)">${e.message}</span>`; });
+}
+
+// ── Search ────────────────────────────────────────────────────────────────────
+function onSearch(val) {
+  const items = document.querySelectorAll('#formContainer .pf-questions li');
+  if (!items.length) {
+    toast('Open The Test tab and click Take the Test first', '');
+    return;
+  }
+  const q = val.trim().toLowerCase();
+  items.forEach(li => {
+    li.classList.toggle('search-hidden', q !== '' && !li.textContent.toLowerCase().includes(q));
+  });
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + (type || '');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.className = '', 4000);
+}
+
+// ── Submit form only ──────────────────────────────────────────────────────────
+async function doSubmit() {
+  const form = document.querySelector('#formContainer form');
+  if (!form) { toast('Click "Take the Test" first to load the form', 'err'); return; }
+  try {
+    const r = await fetch('/submit', { method: 'POST', body: new FormData(form) });
+    const d = await r.json();
+    r.ok ? toast(d.message, 'ok') : toast(d.detail || 'Submit failed', 'err');
+  } catch { toast('Network error', 'err'); }
+}
+
+// ── Run Analysis — auto-submits form first, then analyzes ─────────────────────
+async function doAnalyze() {
+  const form = document.querySelector('#formContainer form');
+  if (!form) { toast('Click "Take the Test" first to load the form', 'err'); return; }
+
+  switchTabByName('profile');
+  document.getElementById('profileDisplay').innerHTML =
+    '<div class="card"><span class="spin"></span><span class="empty">Step 1/2 — Saving form data…</span></div>';
+
+  try {
+    const sr = await fetch('/submit', { method: 'POST', body: new FormData(form) });
+    if (!sr.ok) { const sd = await sr.json(); throw new Error(sd.detail || 'Submit failed'); }
+  } catch(e) {
+    document.getElementById('profileDisplay').innerHTML =
+      `<div class="card"><span style="color:var(--danger)">Could not save form: ${e.message}</span></div>`;
+    toast(e.message, 'err'); return;
+  }
+
+  document.getElementById('profileDisplay').innerHTML =
+    '<div class="card"><span class="spin"></span><span class="empty">Step 2/2 — Running analysis, fetching movies &amp; pet images…</span></div>';
+
+  try {
+    const r = await fetch('/analyze', { method: 'POST' });
+    const d = await r.json();
+    if (r.ok) {
+      toast(d.message, 'ok');
+      // Reset form and go back to not-started state for next user
+      formLoaded = false;
+      const container = document.getElementById('formContainer');
+      container.classList.add('not-started');
+      container.innerHTML = `
+        <p class="start-msg">Click the button below to begin your personality assessment.</p>
+        <button class="start-btn" onclick="revealForm()">
+          Take the Test
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>`;
+      await loadProfilePage();
+    } else throw new Error(d.detail || 'Analysis failed');
+  } catch(e) {
+    document.getElementById('profileDisplay').innerHTML =
+      `<div class="card"><span style="color:var(--danger)">${e.message}</span></div>`;
+    toast(e.message, 'err');
+  }
+}
+
+// ── Reset ─────────────────────────────────────────────────────────────────────
+async function doReset() {
+  if (!confirm('Are you sure you want to delete ALL saved data and profiles?')) return;
+  try {
+    const r = await fetch('/reset', { method: 'DELETE' });
+    const d = await r.json();
+    if (r.ok) {
+      toast(d.message, 'ok');
+      document.getElementById('profileDisplay').innerHTML =
+        '<div class="card"><span class="empty">All data cleared. Fill in the form and run the analysis to start fresh.</span></div>';
+      document.getElementById('inputDisplay').innerHTML =
+        '<span class="empty">Submit the form first, then click "Load Input Data".</span>';
+      document.getElementById('historyDisplay').innerHTML =
+        '<div class="card"><span class="empty">Click "Input Data History" or "Profile History" in the sidebar.</span></div>';
+      // Reset form to not-started state
+      formLoaded = false;
+      const container = document.getElementById('formContainer');
+      container.classList.add('not-started');
+      container.innerHTML = `
+        <p class="start-msg">Click the button below to begin your personality assessment.</p>
+        <button class="start-btn" onclick="revealForm()">
+          Take the Test
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>`;
+    } else throw new Error(d.detail || 'Reset failed');
+  } catch { toast('Network error', 'err'); }
+}
+
+// ── Load current Input Data ───────────────────────────────────────────────────
+async function loadInputData() {
+  switchTabByName('data');
+  const el = document.getElementById('inputDisplay');
+  el.innerHTML = '<span class="spin"></span><span class="empty">Fetching…</span>';
+  try {
+    const r = await fetch('/view/input');
+    if (!r.ok) throw new Error((await r.json()).detail || 'Not found');
+    const d = await r.json();
+    el.innerHTML = buildInputHtml(d);
+  } catch(e) { el.innerHTML = `<span style="color:var(--danger)">${e.message}</span>`; }
+}
+
+// ── Build input data HTML ─────────────────────────────────────────────────────
+function buildInputHtml(d) {
+  const basicLabels = { name:'Name', gender:'Gender', birthyear:'Birth Year', birthplace:'Country of Birth', residence:'Residence', job:'Job Choice' };
+  let html = '<div class="data-grid">';
+  for (const [k, label] of Object.entries(basicLabels)) {
+    const val = Array.isArray(d[k]) ? d[k].join(', ') || '—' : (d[k] || '—');
+    html += `<div class="data-cell"><div class="k">${label}</div><div class="v">${val}</div></div>`;
+  }
+  const pets = Array.isArray(d.pets) ? d.pets.join(', ') || '—' : (d.pets || '—');
+  html += `<div class="data-cell"><div class="k">Pets</div><div class="v">${pets}</div></div></div>`;
+  if (d.message) html += `<div class="insight-block" style="margin-bottom:1.5rem;font-style:italic">"${d.message}"</div>`;
+  const qLabels = [
+    'Is talkative','Does a thorough job','Is original / new ideas','Is helpful / unselfish',
+    'Can be careless','Is relaxed / handles stress','Is curious','Is full of energy',
+    'Starts quarrels','Is a reliable worker','Is a deep thinker','Tends to be disorganized',
+    'Worries a lot','Tends to be quiet','Tends to be lazy','Is sometimes shy',
+    'Is sometimes rude','Tends to find fault','Gets nervous easily','Likes to work in a team'
+  ];
+  html += `<div class="card-eyebrow" style="margin-top:0.5rem;margin-bottom:0.75rem">// Personality Scores (1 = Disagree — 5 = Agree)</div><table class="q-table">`;
+  for (let i = 1; i <= 20; i++)
+    html += `<tr><td>${i}. ${qLabels[i-1]}</td><td>${d['question'+i] || '—'} / 5</td></tr>`;
+  html += '</table>';
+  return html;
+}
+
+// ── Input Data History ────────────────────────────────────────────────────────
+async function loadInputHistory() {
+  document.getElementById('panel-history').classList.remove();
+  // Switch to history panel
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-history').classList.add('active');
+  document.getElementById('pageBody').scrollIntoView({ behavior: 'smooth' });
+
+  const el = document.getElementById('historyDisplay');
+  el.innerHTML = '<div class="card"><span class="spin"></span><span class="empty">Loading input data history…</span></div>';
+  try {
+    const r = await fetch('/view/inputs');
+    if (!r.ok) throw new Error('Could not load input history');
+    const inputs = await r.json();
+    if (!inputs.length) {
+      el.innerHTML = '<div class="card"><span class="empty">No input history yet. Run an analysis first.</span></div>';
+      return;
+    }
+    const rows = inputs.map((inp, i) => {
+      const raw = inp.timestamp;
+      const formatted = `${raw.slice(0,4)}-${raw.slice(4,6)}-${raw.slice(6,8)}  ${raw.slice(9,11)}:${raw.slice(11,13)}:${raw.slice(13,15)}`;
+      const badge = i === 0 ? `<span style="font-family:'DM Mono',monospace;font-size:0.6rem;background:var(--accent-dim);color:var(--accent-hi);border:1px solid var(--accent);border-radius:999px;padding:0.15rem 0.55rem;margin-left:0.6rem">latest</span>` : '';
+      return `
+        <div class="history-card" onclick="loadSingleInput('${inp.filename}')">
+          <div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:0.35rem">${formatted}${badge}</div>
+            <div style="font-size:0.95rem;font-weight:600;color:var(--text-hi)">${inp.name}</div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);margin-top:0.2rem">Job: ${inp.job}</div>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent)">View details →</div>
+        </div>`;
+    }).join('');
+    el.innerHTML = `
+      <div class="card">
+        <div class="card-eyebrow">// Input Data History</div>
+        <p style="font-size:0.82rem;color:var(--muted)">Click any entry to view the full submitted data.</p>
+      </div>
+      ${rows}`;
+  } catch(e) {
+    el.innerHTML = `<div class="card"><span style="color:var(--danger)">${e.message}</span></div>`;
+    toast(e.message, 'err');
+  }
+}
+
+// ── Load a single input by filename ──────────────────────────────────────────
+async function loadSingleInput(filename) {
+  const el = document.getElementById('historyDisplay');
+  el.innerHTML = '<div class="card"><span class="spin"></span><span class="empty">Loading…</span></div>';
+  try {
+    const r = await fetch(`/view/input/${filename}`);
+    if (!r.ok) throw new Error((await r.json()).detail || 'Not found');
+    const d = await r.json();
+    el.innerHTML = `
+      <button class="back-btn" onclick="loadInputHistory()">← Back to Input History</button>
+      <div class="card">
+        <div class="card-eyebrow">// Input Data</div>
+        ${buildInputHtml(d)}
+      </div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="card"><span style="color:var(--danger)">${e.message}</span></div>`;
+    toast(e.message, 'err');
+  }
+}
+
+// ── Profile History ───────────────────────────────────────────────────────────
+async function loadProfileHistory() {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-history').classList.add('active');
+  document.getElementById('pageBody').scrollIntoView({ behavior: 'smooth' });
+
+  const el = document.getElementById('historyDisplay');
+  el.innerHTML = '<div class="card"><span class="spin"></span><span class="empty">Loading profile history…</span></div>';
+  try {
+    const r = await fetch('/view/profiles');
+    if (!r.ok) throw new Error('Could not load profiles');
+    const profiles = await r.json();
+    if (!profiles.length) {
+      el.innerHTML = '<div class="card"><span class="empty">No profiles yet. Run the analysis first.</span></div>';
+      return;
+    }
+    const rows = profiles.map((p, i) => {
+      const raw = p.timestamp;
+      const formatted = `${raw.slice(0,4)}-${raw.slice(4,6)}-${raw.slice(6,8)}  ${raw.slice(9,11)}:${raw.slice(11,13)}:${raw.slice(13,15)}`;
+      const badge = i === 0 ? `<span style="font-family:'DM Mono',monospace;font-size:0.6rem;background:var(--accent-dim);color:var(--accent-hi);border:1px solid var(--accent);border-radius:999px;padding:0.15rem 0.55rem;margin-left:0.6rem">latest</span>` : '';
+      return `
+        <div class="history-card" onclick="loadSingleProfile('${p.filename}')">
+          <div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:0.35rem">${formatted}${badge}</div>
+            <div style="font-size:0.95rem;font-weight:600;color:var(--text-hi)">${p.personality_type}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent-hi);line-height:1">${p.overall_score}<span style="font-size:1rem;color:var(--muted)"> /100</span></div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent);margin-top:0.2rem">View details →</div>
+          </div>
+        </div>`;
+    }).join('');
+    el.innerHTML = `
+      <div class="card">
+        <div class="card-eyebrow">// Profile History</div>
+        <p style="font-size:0.82rem;color:var(--muted)">Click any profile to view full details.</p>
+      </div>
+      ${rows}`;
+  } catch(e) {
+    el.innerHTML = `<div class="card"><span style="color:var(--danger)">${e.message}</span></div>`;
+    toast(e.message, 'err');
+  }
+}
+
+// ── Load single profile ───────────────────────────────────────────────────────
+async function loadSingleProfile(filename) {
+  const el = document.getElementById('historyDisplay');
+  el.innerHTML = '<div class="card"><span class="spin"></span><span class="empty">Loading profile…</span></div>';
+  try {
+    const r = await fetch(`/view/profile/${filename}`);
+    if (!r.ok) throw new Error((await r.json()).detail || 'Not found');
+    const p = await r.json();
+    el.innerHTML = `
+      <button class="back-btn" onclick="loadProfileHistory()">← Back to Profile History</button>
+      ${buildProfileHtml(p)}`;
+  } catch(e) {
+    el.innerHTML = `<div class="card"><span style="color:var(--danger)">${e.message}</span></div>`;
+    toast(e.message, 'err');
+  }
+}
+
+// ── My Profile — shows latest profile only ────────────────────────────────────
+async function loadProfilePage() {
+  switchTabByName('profile');
+  const el = document.getElementById('profileDisplay');
+  el.innerHTML = '<div class="card"><span class="spin"></span><span class="empty">Loading…</span></div>';
+  try {
+    const r = await fetch('/view/profile');
+    if (!r.ok) throw new Error((await r.json()).detail || 'No profile found');
+    const p = await r.json();
+    el.innerHTML = buildProfileHtml(p);
+  } catch(e) {
+    el.innerHTML = `<div class="card"><span class="empty">No profile yet. Fill in the form and click Run Analysis.</span></div>`;
+  }
+}
+
+// ── Build profile HTML ────────────────────────────────────────────────────────
+function buildProfileHtml(p) {
+  const traits = [
+    { label:'Extraversion',      score: p.extraversion },
+    { label:'Agreeableness',     score: p.agreeableness },
+    { label:'Conscientiousness', score: p.conscientiousness },
+    { label:'Neuroticism',       score: p.neuroticism },
+    { label:'Openness',          score: p.openness },
+  ];
+  const barsHtml = traits.map(t => {
+    const pct = Math.round((t.score / 25) * 100);
+    return `<div class="trait-row">
+      <div class="trait-meta"><span>${t.label}</span><span>${t.score} / 25</span></div>
+      <div class="trait-track"><div class="trait-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+
+  let moviesHtml = '';
+  if (p.movies_detail && p.movies_detail.length) {
+    moviesHtml = '<div class="movies-grid">' + p.movies_detail.map(m => {
+      const poster = (m.poster && m.poster !== 'N/A')
+        ? `<img src="${m.poster}" alt="${m.title}" />`
+        : `<div class="movie-no-img">&#127909;</div>`;
+      return `<div class="movie-card">${poster}<div class="mc-body">
+        <div class="mc-title">${m.title||'—'}</div>
+        <div class="mc-year">${m.year||''}</div>
+        <div class="mc-plot">${m.plot||''}</div>
+        ${m.rating ? `<div class="mc-rating">&#9733; ${m.rating}/10</div>` : ''}
+      </div></div>`;
+    }).join('') + '</div>';
+  } else {
+    moviesHtml = '<span class="empty">No movie data.</span>';
+  }
+
+  let petsHtml = '';
+  if (p.pet_images && Object.keys(p.pet_images).length) {
+    petsHtml = `<div class="card"><div class="card-eyebrow">// Your Spirit Animals</div>
+      <div class="pets-grid">${Object.entries(p.pet_images).map(([pet,file]) =>
+        `<div class="pet-card"><img src="/images/${file}" alt="${pet}"/><div class="pet-name">${pet}</div></div>`
+      ).join('')}</div></div>`;
+  }
+
+  return `
+    <div class="card" style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start">
+      <div>
+        <div class="card-eyebrow">// Overall Score</div>
+        <div class="score-big">${p.overall_score}<span> / 100</span></div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);margin-top:0.5rem;letter-spacing:0.08em">${p.personality_type||''}</div>
+      </div>
+      <div style="flex:1;min-width:200px"><div class="card-eyebrow">// Big Five Traits</div>${barsHtml}</div>
+    </div>
+    <div class="card"><div class="card-eyebrow">// Career Analysis</div><div class="insight-block">${p.career_verdict||'—'}</div></div>
+    <div class="card"><div class="card-eyebrow">// Personality Insights</div>${(p.insights||['No insights yet.']).map(i=>`<div class="insight-block">${i}</div>`).join('')}</div>
+    <div class="card"><div class="card-eyebrow">// Recommended Movies</div>${moviesHtml}</div>
+    ${petsHtml}`;
+}
+</script>
+</body>
+</html>
