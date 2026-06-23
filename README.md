@@ -188,17 +188,3 @@ WebAssignment1/
 • The frontend is implemented as a Single Page Application
 • Data is stored temporarily on the server
 • Folder naming is case-sensitive in Docker environments
-
-## Submission
-
-The submitted file is:
-
-```text
-psychological-app.tar
-```
-
-This Docker image contains the full application and can be executed without additional setup.
-
-## Author
-
-Su Min Wai
